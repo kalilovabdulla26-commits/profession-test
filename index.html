@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Какой профессией вы будете счастливы?</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- ГЛАВНЫЙ ЭКРАН -->
+
+    <section class="welcome" id="welcome">
+
+        <div class="flower flower1">✿</div>
+        <div class="flower flower2">❀</div>
+
+        <div class="welcome-card">
+
+            <div class="small-title">
+                ✦ ТЕСТ НА ПРОФЕССИЮ ✦
+            </div>
+
+            <h1>
+                Какая профессия<br>
+                <span>вам подходит?</span>
+            </h1>
+
+            <p class="intro">
+                Ответьте на несколько простых вопросов,
+                а мы определим, какое направление подходит
+                именно вашему характеру.
+            </p>
+
+            <div class="info">
+                <span>12 вопросов</span>
+                <span>♡</span>
+                <span>3–5 минут</span>
+            </div>
+
+            <button class="start-btn" onclick="startTest()">
+                Начать тест
+            </button>
+
+            <p class="note">
+                Здесь нет правильных или неправильных ответов
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ТЕСТ -->
+
+    <section class="test-section" id="test">
+
+        <div class="test-container">
+
+            <div class="test-top">
+
+                <div>
+                    <p class="test-label">ВАШ ПУТЬ</p>
+                    <h2>Найдём профессию мечты</h2>
+                </div>
+
+                <div class="counter">
+                    <span id="current">1</span> / 12
+                </div>
+
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+
+            <div class="question-card">
+
+                <div class="question-number" id="questionNumber">
+                    ВОПРОС 01
+                </div>
+
+                <h3 id="question"></h3>
+
+                <div class="answers" id="answers"></div>
+
+            </div>
+
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>
+                Далее →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- РЕЗУЛЬТАТ -->
+
+    <section class="result-section" id="result">
+
+        <div class="result-card">
+
+            <div class="result-decor">✦ ✿ ✦</div>
+
+            <p class="result-label">
+                ВАШ РЕЗУЛЬТАТ
+            </p>
+
+            <div class="result-icon" id="resultIcon">
+                🎨
+            </div>
+
+            <h2 id="resultTitle">
+                Творческая личность
+            </h2>
+
+            <p class="result-description" id="resultDescription"></p>
+
+            <div class="profession-title">
+                Вам могут подойти
+            </div>
+
+            <div class="professions" id="professions"></div>
+
+            <div class="result-message" id="resultMessage"></div>
+
+            <button class="restart-btn" onclick="restartTest()">
+                ↻ Пройти тест ещё раз
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   ВОПРОСЫ
+========================================== */
+
+const questions = [
+
+    {
+        question: "Что вам нравится делать?",
+        answers: [
+            ["Создавать 🎨", "creative"],
+            ["Анализировать 🧠", "analytical"],
+            ["Помогать ❤️", "helping"],
+            ["Руководить 👔", "leader"]
+        ]
+    },
+
+    {
+        question: "Что у вас получается лучше?",
+        answers: [
+            ["Придумывать идеи", "creative"],
+            ["Решать задачи", "analytical"],
+            ["Общаться с людьми", "communicator"],
+            ["Организовывать", "organizer"]
+        ]
+    },
+
+    {
+        question: "Где вам комфортнее работать?",
+        answers: [
+            ["В творческой среде", "creative"],
+            ["В спокойной обстановке", "analytical"],
+            ["Среди людей", "communicator"],
+            ["В активной команде", "leader"]
+        ]
+    },
+
+    {
+        question: "Что для вас важнее в работе?",
+        answers: [
+            ["Самовыражение", "creative"],
+            ["Знания и развитие", "analytical"],
+            ["Польза людям", "helping"],
+            ["Успех и результат", "leader"]
+        ]
+    },
+
+    {
+        question: "Какое качество вам ближе?",
+        answers: [
+            ["Креативность", "creative"],
+            ["Логика", "analytical"],
+            ["Эмпатия", "helping"],
+            ["Лидерство", "leader"]
+        ]
+    },
+
+    {
+        question: "Если вам дают свободный проект, что вы сделаете первым?",
+        answers: [
+            ["Придумаю необычную концепцию", "creative"],
+            ["Изучу информацию и составлю план", "analytical"],
+            ["Спрошу мнение других людей", "communicator"],
+            ["Распределю задачи между участниками", "organizer"]
+        ]
+    },
+
+    {
+        question: "Какая задача кажется вам интереснее?",
+        answers: [
+            ["Создать красивый дизайн", "creative"],
+            ["Найти решение сложной задачи", "analytical"],
+            ["Провести презентацию", "communicator"],
+            ["Организовать мероприятие", "organizer"]
+        ]
+    },
+
+    {
+        question: "Как вы обычно принимаете решения?",
+        answers: [
+            ["По вдохновению", "creative"],
+            ["Анализирую факты", "analytical"],
+            ["Обсуждаю с людьми", "communicator"],
+            ["Быстро принимаю решение", "leader"]
+        ]
+    },
+
+    {
+        question: "Какая рабочая атмосфера вам нравится?",
+        answers: [
+            ["Спокойная и красивая", "creative"],
+            ["Тихая и сосредоточенная", "analytical"],
+            ["Дружелюбная и общительная", "helping"],
+            ["Динамичная и энергичная", "leader"]
+        ]
+    },
+
+    {
+        question: "Что бы вы выбрали на выходной?",
+        answers: [
+            ["Рисовать, фотографировать или создавать что-то новое", "creative"],
+            ["Разгадывать головоломки или изучать новое", "analytical"],
+            ["Встретиться с друзьями", "communicator"],
+            ["Организовать поездку или мероприятие", "organizer"]
+        ]
+    },
+
+    {
+        question: "Что вас больше всего мотивирует?",
+        answers: [
+            ["Возможность проявить себя", "creative"],
+            ["Интересные задачи", "analytical"],
+            ["Благодарность людей", "helping"],
+            ["Большая цель и результат", "leader"]
+        ]
+    },
+
+    {
+        question: "Какая фраза больше похожа на вас?",
+        answers: [
+            ["«Давайте придумаем что-нибудь необычное!»", "creative"],
+            ["«Давайте сначала разберёмся»", "analytical"],
+            ["«Давайте обсудим это вместе»", "communicator"],
+            ["«Давайте я всё организую»", "organizer"]
+        ]
+    }
+
+];
+
+
+/* ==========================================
+   РЕЗУЛЬТАТЫ
+========================================== */
+
+const results = {
+
+    creative: {
+        icon: "🎨",
+        title: "Творческая личность",
+        description:
+            "Вы любите создавать новое, замечаете красоту и легко придумываете необычные идеи. Вам важно самовыражение и возможность делать что-то по-своему.",
+        professions: [
+            "Графический дизайнер",
+            "UI/UX-дизайнер",
+            "Фотограф",
+            "Стилист",
+            "Архитектор",
+            "Контент-мейкер"
+        ],
+        message:
+            "Вам особенно подойдут профессии, где можно проявлять фантазию и видеть результат своей работы."
+    },
+
+    analytical: {
+        icon: "🧠",
+        title: "Аналитик",
+        description:
+            "Вы умеете замечать детали, любите разбираться в сложных вопросах и искать логичные решения. Вам комфортно работать с информацией.",
+        professions: [
+            "Программист",
+            "Data Analyst",
+            "Математик",
+            "Инженер",
+            "Финансовый аналитик",
+            "Исследователь"
+        ],
+        message:
+            "Ваш сильный навык — логическое мышление. Вам подойдут профессии, где нужно анализировать и находить решения."
+    },
+
+    helping: {
+        icon: "❤️",
+        title: "Помогающая личность",
+        description:
+            "Вы хорошо чувствуете настроение других людей, умеете поддерживать и хотите приносить пользу. Для вас важны отношения и смысл работы.",
+        professions: [
+            "Психолог",
+            "Педагог",
+            "Врач",
+            "HR-специалист",
+            "Социальный работник",
+            "Коуч"
+        ],
+        message:
+            "Вам подойдут профессии, где главным результатом является помощь, развитие и поддержка других людей."
+    },
+
+    communicator: {
+        icon: "💬",
+        title: "Коммуникатор",
+        description:
+            "Вы легко находите общий язык с людьми, умеете выражать свои мысли и любите активное общение.",
+        professions: [
+            "Маркетолог",
+            "SMM-специалист",
+            "PR-менеджер",
+            "Журналист",
+            "Менеджер по продажам",
+            "Блогер"
+        ],
+        message:
+            "Вам особенно подходят профессии, связанные с людьми, общением, рекламой и продвижением."
+    },
+
+    leader: {
+        icon: "👑",
+        title: "Прирождённый лидер",
+        description:
+            "Вы инициативны, уверенно принимаете решения и умеете вести других за собой. Вам нравится видеть конкретный результат.",
+        professions: [
+            "Предприниматель",
+            "Руководитель",
+            "Project Manager",
+            "Бизнес-менеджер",
+            "Продюсер",
+            "Team Lead"
+        ],
+        message:
+            "Вам подойдут профессии, где можно принимать решения, руководить процессами и отвечать за результат."
+    },
+
+    organizer: {
+        icon: "📋",
+        title: "Организатор",
+        description:
+            "Вы умеете наводить порядок, планировать и превращать идеи в реальные проекты. На вас можно положиться.",
+        professions: [
+            "Project Manager",
+            "Администратор",
+            "Event-менеджер",
+            "Координатор",
+            "Продюсер",
+            "Офис-менеджер"
+        ],
+        message:
+            "Ваш талант — превращать хаос в систему. Вам подходят профессии, где нужно планировать и координировать."
+    }
+
+};
+
+
+/* ==========================================
+   ПЕРЕМЕННЫЕ
+========================================== */
+
+let currentQuestion = 0;
+
+let selectedAnswer = null;
+
+let scores = {
+    creative: 0,
+    analytical: 0,
+    helping: 0,
+    communicator: 0,
+    leader: 0,
+    organizer: 0
+};
+
+
+/* ==========================================
+   НАЧАТЬ ТЕСТ
+========================================== */
+
+function startTest() {
+
+    document.getElementById("welcome").style.display = "none";
+
+    document.getElementById("test").style.display = "block";
+
+    currentQuestion = 0;
+
+    showQuestion();
+
+}
+
+
+/* ==========================================
+   ПОКАЗАТЬ ВОПРОС
+========================================== */
+
+function showQuestion() {
+
+    selectedAnswer = null;
+
+    const q = questions[currentQuestion];
+
+    document.getElementById("question").textContent = q.question;
+
+    document.getElementById("questionNumber").textContent =
+        "ВОПРОС " + String(currentQuestion + 1).padStart(2, "0");
+
+    document.getElementById("current").textContent =
+        currentQuestion + 1;
+
+    document.getElementById("progressBar").style.width =
+        ((currentQuestion + 1) / questions.length * 100) + "%";
+
+
+    const answersContainer = document.getElementById("answers");
+
+    answersContainer.innerHTML = "";
+
+
+    q.answers.forEach((answer, index) => {
+
+        const button = document.createElement("button");
+
+        button.className = "answer";
+
+        button.innerHTML = `
+            <span class="letter">${String.fromCharCode(65 + index)}</span>
+            <span>${answer[0]}</span>
+        `;
+
+        button.onclick = function() {
+
+            document.querySelectorAll(".answer").forEach(btn => {
+                btn.classList.remove("selected");
+            });
+
+            button.classList.add("selected");
+
+            selectedAnswer = answer[1];
+
+            document.getElementById("nextBtn").disabled = false;
+
+        };
+
+        answersContainer.appendChild(button);
+
+    });
+
+
+    const nextButton = document.getElementById("nextBtn");
+
+    if (currentQuestion === questions.length - 1) {
+        nextButton.textContent = "Узнать результат ✦";
+    } else {
+        nextButton.textContent = "Далее →";
+    }
+
+    nextButton.disabled = true;
+
+}
+
+
+/* ==========================================
+   СЛЕДУЮЩИЙ ВОПРОС
+========================================== */
+
+function nextQuestion() {
+
+    if (!selectedAnswer) return;
+
+    scores[selectedAnswer]++;
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+
+        showQuestion();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    } else {
+
+        showResult();
+
+    }
+
+}
+
+
+/* ==========================================
+   РЕЗУЛЬТАТ
+========================================== */
+
+function showResult() {
+
+    document.getElementById("test").style.display = "none";
+
+    document.getElementById("result").style.display = "flex";
+
+
+    let bestType = Object.keys(scores).reduce(function(a, b) {
+
+        return scores[a] > scores[b] ? a : b;
+
+    });
+
+
+    const result = results[bestType];
+
+
+    document.getElementById("resultIcon").textContent =
+        result.icon;
+
+    document.getElementById("resultTitle").textContent =
+        result.title;
+
+    document.getElementById("resultDescription").textContent =
+        result.description;
+
+
+    const professionsContainer =
+        document.getElementById("professions");
+
+    professionsContainer.innerHTML = "";
+
+
+    result.professions.forEach(function(profession) {
+
+        const item = document.createElement("div");
+
+        item.className = "profession";
+
+        item.textContent = profession;
+
+        professionsContainer.appendChild(item);
+
+    });
+
+
+    document.getElementById("resultMessage").textContent =
+        result.message;
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ==========================================
+   ПРОЙТИ ЕЩЁ РАЗ
+========================================== */
+
+function restartTest() {
+
+    scores = {
+        creative: 0,
+        analytical: 0,
+        helping: 0,
+        communicator: 0,
+        leader: 0,
+        organizer: 0
+    };
+
+    currentQuestion = 0;
+
+    document.getElementById("result").style.display = "none";
+
+    document.getElementById("welcome").style.display = "flex";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+</script>
+
+</body>
+</html>
